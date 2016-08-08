@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>球球</title>
+	<style type="text/css">
+		.circle{
+			position: absolute; 
+			opacity: 0.3;
+			border:1px yellow solid;
+		}
+		#boss{
+			width: 80px;
+		    height: 80px;
+		    border-radius: 50%;
+		    background: black;
+		    position: absolute;
+		    color: #fff;
+		    text-align: center;
+		    line-height: 80px;
+		}
+	</style>
+</head>
+<body>
+	<div id="boss">o(≧v≦)o</div>
+</body>
+<script type="text/javascript">
+	var boss=document.getElementById('boss');
+
+
+	 /*boss.onmousedown=function(eve){
+        	var event=eve || window.event;
+        	var w=event.clientX-boss.offsetLeft;
+        	var h=event.clientY-boss.offsetTop;
+
+
+               document.onmousemove=function(e){
+               var event=e || window.event,
+                   l=event.clientX-w,
+                   t=event.clientY-h,
+                   maxW=document.documentElement.clientWidth-boss.offsetWidth,
+                   maxH=document.documentElement.clientHeight-boss.offsetHeight;
+
+               if(l<0)l=0;
+               if(t<0)t=0;
+               if(l>maxW)l=maxW;
+               if(t>maxH)t=maxH;
+
+               boss.style.left=l+"px";
+               boss.style.top=t+"px";
+               }
+
+        }
+
+        boss.onmouseup=function(){
+              
+            document.onmousemove=null
+        }*/
+
+			function move(e){
+				var event=e|| window.event
+				var x=event.clientX-boss.offsetWidth/2;
+				var y=event.clientY-boss.offsetWidth/2;
+				var l=document.documentElement.clientWhidth-boss.offsetWidth;
+				var t=document.documentElement.clientHeight-boss.offsetHeight;
+				
+				if(y>t)
+					y=t
+				
+				if (x>l) 
+
+					x=l
+				
+				if (y<0) 
+					y=0
+				
+				if(x<0)
+					x=0
+				
+				boss.style.top=y+"px";
+				boss.style.left=x+"px";
+			}
+
+		boss.addEventListener("mousedown",function(eve){
+			var event=eve || window.event;
+        	var w=event.clientX-boss.offsetLeft;
+        	var h=event.clientY-boss.offsetTop;
+			
+			document.addEventListener("mousemove",move,false);
+			
+		},false);
+		
+		boss.addEventListener("mouseup",function(){
+			//document.onmousemove=null;
+			document.removeEventListener("mousemove",move,false);
+		
+		},false)
+		
+
+	var ball=function(width,height,left,top,background,radius){
+		this.width=width;
+		this.height=height;
+		this.left=left;
+		this.top=top;
+		this.background=background;
+		this.radius=radius;
+		//this.speed=speed;
+		this.init();
+		this.move();
+
+	}
+
+	ball.prototype={
+		init:function(){
+			this.ele=document.createElement("div");
+			document.body.appendChild(this.ele);
+			
+		},
+		render:function(){
+			this.ele.style.cssText="width:"+this.width+"px;height:"+this.height+"px;left:"+this.left+"px;top:"+this.top+"px;background:"+this.background+";border-radius:"+this.radius+"px;";
+			this.ele.className="circle";
+		},
+		move:function(){
+			var that=this;
+			var xx=document.documentElement.clientWidth-that.width-5;
+			var yy=document.documentElement.clientHeight-that.height-5;
+			var speedLeft=randNum(2,-2);
+			var	speedTop=randNum(2,-2);
+			//console.log(Math.sqrt(9))
+			setInterval(function(){
+			
+				if (that.left<0 || that.left>xx) {
+					speedLeft=-speedLeft;
+				};
+				if (that.top<0||that.top>yy) {
+					speedTop=-speedTop;
+				};
+				that.left+=speedLeft;
+				that.top+=speedTop;
+				that.render();
+				
+				//判断球与球之间的距离
+				var bossT=boss.offsetTop;
+				var bossL=boss.offsetLeft;
+				
+				qq=null,ww=null;
+				var qq=Math.sqrt(Math.pow(that.top+that.width/2-bossT-boss.offsetWidth/2,2)+Math.pow(that.left+that.width/2-bossL-boss.offsetWidth/2,2)),
+					ww=boss.offsetWidth/2+that.width/2;
+					console.log(qq);
+					console.log(ww);
+			
+				if (qq<=ww) {
+					
+					boss.innerHTML="o(>﹏<)o";
+					alert("你死了！！！");
+					location.reload();
+				};
+			},1);
+			
+		}
+	}
+	function randNum(max,min){
+		var suiji=Math.floor(Math.random()*(max-min)+min+1);
+		 
+		if (suiji==0) {
+			suiji=randNum(max,min)
+		}
+		return suiji;
+	}
+
+	
+
+	
+	document.addEventListener("mousedown",function(){
+		//var kongX=event.clientX,kongY=event.clientY;
+		var small=document.querySelectorAll(".circle");
+
+		if (small.length<30) {
+			for (var i = 0; i < 30; i++) {
+			 var h=document.documentElement.clientWidth-200;
+			 var v=document.documentElement.clientHeight-200;
+	
+			var wh=randNum(200,10);
+			//var se=randNum(255,0);
+			var now=new ball(wh,wh,randNum(h,10),randNum(v,10),"rgb("+randNum(255,0)+","+randNum(255,0)+","+randNum(255,0)+")",wh);
+			}
+		}
+		
+	})
+
+
+</script>
+
+</html>
